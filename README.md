@@ -26,30 +26,38 @@
 </p>
 
 <p align="center">
-  <a href="#-visão-geral">Visão geral</a> •
-  <a href="#-funcionalidades">Funcionalidades</a> •
-  <a href="#-fluxo-de-atendimento">Fluxo</a> •
-  <a href="#-arquitetura">Arquitetura</a> •
-  <a href="#-decisões-técnicas">Decisões técnicas</a> •
-  <a href="#-tecnologias">Tecnologias</a>
+  <a href="#visão-geral">Visão geral</a> •
+  <a href="#mapa-do-projeto">Mapa</a> •
+  <a href="#funcionalidades">Funcionalidades</a> •
+  <a href="#fluxo-de-atendimento">Fluxo</a> •
+  <a href="#arquitetura">Arquitetura</a> •
+  <a href="#decisões-técnicas">Decisões técnicas</a> •
+  <a href="#conversa-simulada">Conversa simulada</a> •
+  <a href="#tecnologias">Tecnologias</a>
 </p>
 
 ---
 
-## 📌 Visão geral
+## Visão geral
 
 O **Conserta Fácil** é um projeto de portfólio que simula o atendimento inicial de uma assistência técnica de celulares.
 O cliente conversa pelo WhatsApp, solicita um orçamento, acompanha um reparo, reserva um horário para entrega e
 é encaminhado à equipe quando necessário. Todos os dados da loja, dos aparelhos e dos clientes são fictícios.
 
-| ❌ Problema | 💡 Solução | ✅ Resultado |
+| Problema | Solução | Resultado |
 |---|---|---|
 | Mensagens sobre orçamento chegam fora do horário e sem um padrão de informações. | Fluxo guiado que coleta modelo, tipo de defeito e descrição antes de registrar a solicitação. | Cada pedido chega à equipe completo, com protocolo. |
 | O cliente precisa perguntar o andamento do reparo por mensagem. | Consulta de status pelo protocolo, restrita ao remetente que fez o pedido. | Informações do reparo disponíveis sem intervenção da equipe. |
 | Agendar a entrega exige troca de mensagens até encontrar um horário livre. | Lista de horários disponíveis; o horário reservado deixa de ser oferecido. | Reserva confirmada com protocolo em poucas etapas. |
 | Clientes escrevem o problema em texto livre, de forma variada. | IA extrai modelo, defeito e descrição; o bot pede apenas o que falta e exibe um resumo para confirmação. | Registro somente após confirmação explícita do cliente. |
 
-## ⚙️ Funcionalidades
+## Mapa do projeto
+
+<p align="center">
+  <img src="docs/mapa-mental.svg" alt="Mapa mental do projeto Conserta Fácil" width="100%"/>
+</p>
+
+## Funcionalidades
 
 | Função | Comportamento |
 |---|---|
@@ -60,7 +68,7 @@ O cliente conversa pelo WhatsApp, solicita um orçamento, acompanha um reparo, r
 | **Falar com a equipe** | Registra uma solicitação de atendimento humano com o assunto informado pelo cliente. |
 | **Interpretação com IA** | Quando habilitada, identifica a intenção de orçamento em uma mensagem livre e extrai os dados do aparelho. |
 
-## 🔄 Fluxo de atendimento
+## Fluxo de atendimento
 
 ```mermaid
 flowchart TD
@@ -78,22 +86,57 @@ flowchart TD
     D -->|Texto livre| M{IA habilitada?}
     M -->|Sim, é orçamento| E
     M -->|Não ou não é orçamento| N[Exibe o menu]
+
+    classDef orcamento fill:#DCFCE7,stroke:#16A34A,color:#14532D
+    classDef reparo fill:#EDE9FE,stroke:#7C3AED,color:#4C1D95
+    classDef agenda fill:#E0F2FE,stroke:#0284C7,color:#0C4A6E
+    classDef loja fill:#F1F5F9,stroke:#64748B,color:#1E293B
+    classDef equipe fill:#FEE2E2,stroke:#DC2626,color:#7F1D1D
+    classDef ia fill:#FEF3C7,stroke:#D97706,color:#78350F
+    class E,F,G orcamento
+    class H reparo
+    class I,J agenda
+    class K loja
+    class L equipe
+    class M,N ia
 ```
 
-## 🏗️ Arquitetura
+## Arquitetura
+
+Sequência de uma mensagem, do celular do cliente até a resposta do bot:
 
 ```mermaid
-flowchart LR
-    C[Cliente] -->|WhatsApp| M[Meta · Cloud API]
-    M -->|Webhook HTTPS| W[whatsapp.mjs]
-    W -->|Validação HMAC SHA-256| W
-    W --> B[bot.mjs · máquina de estados]
-    B -->|Interpretação opcional| T[triagem.mjs · OpenAI]
-    B --> O[operacao.mjs · agenda]
-    B --> P[(pedidos.jsonl)]
-    B -->|Resposta| W
-    W -->|Graph API| M
+sequenceDiagram
+    autonumber
+    participant C as Cliente
+    participant M as Meta (Cloud API)
+    participant W as whatsapp.mjs
+    participant B as bot.mjs
+    C->>M: Envia mensagem de texto
+    M->>W: POST /webhook com x-hub-signature-256
+    W->>W: Valida assinatura HMAC SHA-256
+    W->>B: processarMensagem(estado, texto)
+    B-->>W: Resposta e novo estado
+    W->>M: Graph API envia a resposta
+    M->>C: Resposta do bot
 ```
+
+Ciclo de status previsto para cada pedido registrado:
+
+```mermaid
+stateDiagram-v2
+    [*] --> aguardando_avaliacao: Pedido registrado
+    state "Aguardando avaliação" as aguardando_avaliacao
+    state "Em diagnóstico" as em_diagnostico
+    state "Aguardando peça" as aguardando_peca
+    state "Pronto para retirada" as pronto
+    aguardando_avaliacao --> em_diagnostico
+    em_diagnostico --> aguardando_peca
+    aguardando_peca --> pronto
+    pronto --> [*]
+```
+
+Componentes:
 
 | Módulo | Responsabilidade |
 |---|---|
@@ -102,7 +145,7 @@ flowchart LR
 | `triagem.mjs` | Chamada à API da OpenAI com saída em JSON Schema, para extrair dados de texto livre. |
 | `operacao.mjs` | Agenda de horários, com reserva atômica por arquivo. |
 
-## 🧭 Decisões técnicas
+## Decisões técnicas
 
 - **Confirmação antes do registro.** A IA apenas sugere os dados. Nenhum pedido é gravado sem a confirmação do cliente.
 - **Valor fora do bot.** O sistema não estima preço. A avaliação do aparelho é responsabilidade da equipe.
@@ -113,7 +156,11 @@ flowchart LR
 - **Dependências mínimas.** O projeto usa somente os módulos nativos do Node.js.
 - **Dados fora do repositório.** Pedidos, reservas e credenciais são mantidos localmente e excluídos do controle de versão.
 
-## 🛠️ Tecnologias
+## Conversa simulada
+
+O arquivo [SIMULACAO.md](SIMULACAO.md) mostra uma conversa completa: pedido de orçamento, confirmação, protocolo e consulta. A simulação passa pelo mesmo webhook assinado que a Meta usaria, sem chamar a API.
+
+## Tecnologias
 
 | Categoria | Tecnologias |
 |---|---|
@@ -122,5 +169,5 @@ flowchart LR
 | IA | OpenAI Responses API, saída estruturada com JSON Schema |
 | Segurança | HMAC SHA-256, comparação em tempo constante |
 | Armazenamento | Arquivos JSON Lines e agenda em arquivos |
+| Documentação visual | Mermaid, SVG |
 | Versionamento | Git, GitHub |
-
