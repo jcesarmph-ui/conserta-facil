@@ -26,38 +26,68 @@
 </p>
 
 <p align="center">
-  <a href="#visão-geral">Visão geral</a> •
-  <a href="#mapa-do-projeto">Mapa</a> •
-  <a href="#funcionalidades">Funcionalidades</a> •
-  <a href="#fluxo-de-atendimento">Fluxo</a> •
-  <a href="#arquitetura">Arquitetura</a> •
-  <a href="#decisões-técnicas">Decisões técnicas</a> •
-  <a href="#conversa-simulada">Conversa simulada</a> •
-  <a href="#tecnologias">Tecnologias</a>
+  <a href="#-visão-geral">Visão geral</a> •
+  <a href="#-mapa-do-projeto">Mapa</a> •
+  <a href="#️-funcionalidades">Funcionalidades</a> •
+  <a href="#-fluxo-de-atendimento">Fluxo</a> •
+  <a href="#️-arquitetura">Arquitetura</a> •
+  <a href="#-decisões-técnicas">Decisões técnicas</a> •
+  <a href="#-conversa-simulada">Conversa simulada</a> •
+  <a href="#️-tecnologias">Tecnologias</a>
 </p>
 
 ---
 
-## Visão geral
+## 📌 Visão geral
 
 O **Conserta Fácil** é um projeto de portfólio que simula o atendimento inicial de uma assistência técnica de celulares.
 O cliente conversa pelo WhatsApp, solicita um orçamento, acompanha um reparo, reserva um horário para entrega e
 é encaminhado à equipe quando necessário. Todos os dados da loja, dos aparelhos e dos clientes são fictícios.
 
-| Problema | Solução | Resultado |
+| ❌ Problema | 💡 Solução | ✅ Resultado |
 |---|---|---|
 | Mensagens sobre orçamento chegam fora do horário e sem um padrão de informações. | Fluxo guiado que coleta modelo, tipo de defeito e descrição antes de registrar a solicitação. | Cada pedido chega à equipe completo, com protocolo. |
 | O cliente precisa perguntar o andamento do reparo por mensagem. | Consulta de status pelo protocolo, restrita ao remetente que fez o pedido. | Informações do reparo disponíveis sem intervenção da equipe. |
 | Agendar a entrega exige troca de mensagens até encontrar um horário livre. | Lista de horários disponíveis; o horário reservado deixa de ser oferecido. | Reserva confirmada com protocolo em poucas etapas. |
 | Clientes escrevem o problema em texto livre, de forma variada. | IA extrai modelo, defeito e descrição; o bot pede apenas o que falta e exibe um resumo para confirmação. | Registro somente após confirmação explícita do cliente. |
 
-## Mapa do projeto
+## 🧠 Mapa do projeto
 
-<p align="center">
-  <img src="docs/mapa-mental.svg" alt="Mapa mental do projeto Conserta Fácil" width="100%"/>
-</p>
+```mermaid
+mindmap
+  root((Conserta Fácil))
+    🛒 Atendimento
+      Menu com cinco opções
+      Orçamento com resumo e confirmação
+      Consulta de reparo por protocolo
+      Agenda com horário reservado
+      Falar com a equipe
+    🔌 Integração
+      Webhook HTTPS
+      Assinatura HMAC SHA-256
+      Envio pela Graph API
+      Fila por cliente
+    🤖 Inteligência artificial
+      Intenção de orçamento
+      Extração de modelo e defeito
+      Saída em JSON Schema
+      Fallback para o fluxo guiado
+    🗂️ Dados
+      Pedidos com protocolo
+      Agenda com reserva atômica
+      Dados fictícios
+      Credenciais fora do Git
+    ✅ Verificação
+      Simulação do fluxo completo
+      Assinatura inválida recusada
+      Mensagens repetidas não reenviadas
+    🧭 Decisões
+      Confirmação antes do registro
+      Valor definido pela equipe
+      Consulta só para quem fez o pedido
+```
 
-## Funcionalidades
+## ⚙️ Funcionalidades
 
 | Função | Comportamento |
 |---|---|
@@ -68,7 +98,7 @@ O cliente conversa pelo WhatsApp, solicita um orçamento, acompanha um reparo, r
 | **Falar com a equipe** | Registra uma solicitação de atendimento humano com o assunto informado pelo cliente. |
 | **Interpretação com IA** | Quando habilitada, identifica a intenção de orçamento em uma mensagem livre e extrai os dados do aparelho. |
 
-## Fluxo de atendimento
+## 🔄 Fluxo de atendimento
 
 ```mermaid
 flowchart TD
@@ -101,7 +131,7 @@ flowchart TD
     class M,N ia
 ```
 
-## Arquitetura
+## 🏗️ Arquitetura
 
 Sequência de uma mensagem, do celular do cliente até a resposta do bot:
 
@@ -145,7 +175,7 @@ Componentes:
 | `triagem.mjs` | Chamada à API da OpenAI com saída em JSON Schema, para extrair dados de texto livre. |
 | `operacao.mjs` | Agenda de horários, com reserva atômica por arquivo. |
 
-## Decisões técnicas
+## 🧭 Decisões técnicas
 
 - **Confirmação antes do registro.** A IA apenas sugere os dados. Nenhum pedido é gravado sem a confirmação do cliente.
 - **Valor fora do bot.** O sistema não estima preço. A avaliação do aparelho é responsabilidade da equipe.
@@ -156,11 +186,17 @@ Componentes:
 - **Dependências mínimas.** O projeto usa somente os módulos nativos do Node.js.
 - **Dados fora do repositório.** Pedidos, reservas e credenciais são mantidos localmente e excluídos do controle de versão.
 
-## Conversa simulada
+## 💬 Conversa simulada
 
-O arquivo [SIMULACAO.md](SIMULACAO.md) mostra uma conversa completa: pedido de orçamento, confirmação, protocolo e consulta. A simulação passa pelo mesmo webhook assinado que a Meta usaria, sem chamar a API.
+A conversa abaixo tem pedido de orçamento, confirmação, protocolo e consulta. Ela passa pelo mesmo webhook assinado que a Meta usaria, sem chamar a API.
 
-## Tecnologias
+<p align="center">
+  <img src="docs/conversa-whatsapp.svg" alt="Conversa simulada no estilo WhatsApp" width="460"/>
+</p>
+
+Detalhes da simulação em [SIMULACAO.md](SIMULACAO.md).
+
+## 🛠️ Tecnologias
 
 | Categoria | Tecnologias |
 |---|---|
@@ -169,5 +205,5 @@ O arquivo [SIMULACAO.md](SIMULACAO.md) mostra uma conversa completa: pedido de o
 | IA | OpenAI Responses API, saída estruturada com JSON Schema |
 | Segurança | HMAC SHA-256, comparação em tempo constante |
 | Armazenamento | Arquivos JSON Lines e agenda em arquivos |
-| Documentação visual | Mermaid, SVG |
+| Diagramas | Mermaid |
 | Versionamento | Git, GitHub |
