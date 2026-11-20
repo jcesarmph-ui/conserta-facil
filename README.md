@@ -31,8 +31,7 @@
   <a href="#-fluxo-de-atendimento">Fluxo</a> •
   <a href="#-arquitetura">Arquitetura</a> •
   <a href="#-decisões-técnicas">Decisões técnicas</a> •
-  <a href="#-tecnologias">Tecnologias</a> •
-  <a href="#-limitações-e-próximos-passos">Limitações</a>
+  <a href="#-tecnologias">Tecnologias</a>
 </p>
 
 ---
@@ -125,14 +124,3 @@ flowchart LR
 | Armazenamento | Arquivos JSON Lines e agenda em arquivos |
 | Versionamento | Git, GitHub |
 
-## 🚧 Limitações e próximos passos
-
-- As conversas em andamento ficam em memória e são perdidas ao reiniciar o servidor.
-- Os pedidos e as reservas são gravados em arquivos locais. Uma versão de produção exige banco de dados persistente.
-- A agenda é uma demonstração e não se conecta ao sistema da assistência.
-- O encaminhamento para a equipe registra a solicitação, sem notificação automática.
-- A integração com a IA foi verificada com respostas simuladas. A validação com a API real ainda está pendente.
-- A integração com a Cloud API foi verificada com eventos simulados. A validação com número real ainda está pendente.
-
-**Próximos passos:** banco de dados persistente, notificação da equipe, integração com um sistema de ordens de serviço,
-painel de acompanhamento e testes automatizados das regras de conversa.
