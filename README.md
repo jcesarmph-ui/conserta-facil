@@ -1,4 +1,14 @@
-# Conserta Fácil | Chatbot de Atendimento via WhatsApp
+<p align="center">
+  <b>🌐 Choose your language · Escolha o idioma</b><br/><br/>
+  <img src="https://img.shields.io/badge/✓_English-current-1F6FEB?style=for-the-badge" alt="English (current)"/>
+  <a href="README.pt-BR.md">
+    <img src="https://img.shields.io/badge/Português-clique_para_ler_→-2EA043?style=for-the-badge" alt="Ler em português"/>
+  </a>
+</p>
+
+---
+
+# EasyFix | WhatsApp Customer Service Chatbot
 
 <p align="center">
   <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js"/>
@@ -12,110 +22,114 @@
   <img src="https://img.shields.io/badge/Claude_Code-D97757?style=for-the-badge&logo=claude&logoColor=white" alt="Claude Code"/>
 </p>
 <p align="center">
-  <img src="https://img.shields.io/badge/área-atendimento_e_automação-blue?style=flat-square" alt="Área"/>
-  <img src="https://img.shields.io/badge/tipo-chatbot-purple?style=flat-square" alt="Tipo"/>
-  <img src="https://img.shields.io/badge/dados-100%25_fictícios-brightgreen?style=flat-square" alt="Dados"/>
-  <img src="https://img.shields.io/badge/status-em_desenvolvimento-orange?style=flat-square" alt="Status"/>
-  <img src="https://img.shields.io/badge/idioma-pt--BR-green?style=flat-square" alt="Idioma"/>
+  <img src="https://img.shields.io/badge/area-customer_service_and_automation-blue?style=flat-square" alt="Area"/>
+  <img src="https://img.shields.io/badge/type-chatbot-purple?style=flat-square" alt="Type"/>
+  <img src="https://img.shields.io/badge/data-100%25_fictitious-brightgreen?style=flat-square" alt="Data"/>
+  <img src="https://img.shields.io/badge/status-in_development-orange?style=flat-square" alt="Status"/>
+  <img src="https://img.shields.io/badge/bot_language-Portuguese-green?style=flat-square" alt="Bot language"/>
 </p>
 
 <p align="center">
-  Chatbot de atendimento para uma assistência técnica de celulares, com fluxos de orçamento, acompanhamento
-  de reparo, agendamento de entrega, consulta de informações da loja e encaminhamento para a equipe.
-  Opera pela API oficial do WhatsApp e pode interpretar mensagens em texto livre com IA.
+  Customer service chatbot for a phone repair shop, with flows for quotes, repair tracking, delivery scheduling,
+  store information and handoff to the team. It runs on the official WhatsApp API and can interpret free-text
+  messages with AI.
 </p>
 
 <p align="center">
-  <a href="#-visão-geral">Visão geral</a> •
-  <a href="#-mapa-do-projeto">Mapa</a> •
-  <a href="#️-funcionalidades">Funcionalidades</a> •
-  <a href="#-fluxo-de-atendimento">Fluxo</a> •
-  <a href="#️-arquitetura">Arquitetura</a> •
-  <a href="#-decisões-técnicas">Decisões técnicas</a> •
-  <a href="#-conversa-simulada">Conversa simulada</a> •
-  <a href="#️-tecnologias">Tecnologias</a>
+  <a href="#-overview">Overview</a> •
+  <a href="#-project-map">Map</a> •
+  <a href="#️-features">Features</a> •
+  <a href="#-service-flow">Flow</a> •
+  <a href="#️-architecture">Architecture</a> •
+  <a href="#-technical-decisions">Technical decisions</a> •
+  <a href="#-simulated-conversation">Simulated conversation</a> •
+  <a href="#️-technologies">Technologies</a>
 </p>
 
 ---
 
-## 📌 Visão geral
+## 📌 Overview
 
-O **Conserta Fácil** é um projeto de portfólio que simula o atendimento inicial de uma assistência técnica de celulares.
-O cliente conversa pelo WhatsApp, solicita um orçamento, acompanha um reparo, reserva um horário para entrega e
-é encaminhado à equipe quando necessário. Todos os dados da loja, dos aparelhos e dos clientes são fictícios.
+**EasyFix** (originally *Conserta Fácil*) is a portfolio project that simulates the first-line customer service of a
+phone repair shop. The customer chats on WhatsApp, requests a quote, tracks a repair, books a delivery slot and is
+handed off to the team when needed. All store, device and customer data is fictitious.
 
-| ❌ Problema | 💡 Solução | ✅ Resultado |
+> [!NOTE]
+> The bot talks to customers in Portuguese, since it targets a Brazilian shop. The code, flows and decisions are
+> described here in English.
+
+| ❌ Problem | 💡 Solution | ✅ Result |
 |---|---|---|
-| Mensagens sobre orçamento chegam fora do horário e sem um padrão de informações. | Fluxo guiado que coleta modelo, tipo de defeito e descrição antes de registrar a solicitação. | Cada pedido chega à equipe completo, com protocolo. |
-| O cliente precisa perguntar o andamento do reparo por mensagem. | Consulta de status pelo protocolo, restrita ao remetente que fez o pedido. | Informações do reparo disponíveis sem intervenção da equipe. |
-| Agendar a entrega exige troca de mensagens até encontrar um horário livre. | Lista de horários disponíveis; o horário reservado deixa de ser oferecido. | Reserva confirmada com protocolo em poucas etapas. |
-| Clientes escrevem o problema em texto livre, de forma variada. | IA extrai modelo, defeito e descrição; o bot pede apenas o que falta e exibe um resumo para confirmação. | Registro somente após confirmação explícita do cliente. |
+| Quote requests arrive outside business hours and without a standard set of information. | Guided flow that collects model, defect type and description before registering the request. | Every request reaches the team complete, with a protocol number. |
+| The customer has to message the shop to ask about repair progress. | Status lookup by protocol number, restricted to the sender who made the request. | Repair information available without team intervention. |
+| Scheduling a delivery takes several messages until a free slot is found. | List of available slots; a booked slot is no longer offered. | Booking confirmed with a protocol number in a few steps. |
+| Customers describe the problem in free text, in many different ways. | AI extracts model, defect and description; the bot asks only for what is missing and shows a summary for confirmation. | Registration only after the customer's explicit confirmation. |
 
-## 🧠 Mapa do projeto
+## 🧠 Project map
 
 ```mermaid
 mindmap
-  root((Conserta Fácil))
-    🛒 Atendimento
-      Menu com cinco opções
-      Orçamento com resumo e confirmação
-      Consulta de reparo por protocolo
-      Agenda com horário reservado
-      Falar com a equipe
-    🔌 Integração
-      Webhook HTTPS
-      Assinatura HMAC SHA-256
-      Envio pela Graph API
-      Fila por cliente
-    🤖 Inteligência artificial
-      Intenção de orçamento
-      Extração de modelo e defeito
-      Saída em JSON Schema
-      Fallback para o fluxo guiado
-    🗂️ Dados
-      Pedidos com protocolo
-      Agenda com reserva atômica
-      Dados fictícios
-      Credenciais fora do Git
-    ✅ Verificação
-      Simulação do fluxo completo
-      Assinatura inválida recusada
-      Mensagens repetidas não reenviadas
-    🧭 Decisões
-      Confirmação antes do registro
-      Valor definido pela equipe
-      Consulta só para quem fez o pedido
+  root((EasyFix))
+    🛒 Customer service
+      Menu with five options
+      Quote with summary and confirmation
+      Repair lookup by protocol
+      Schedule with reserved slot
+      Talk to the team
+    🔌 Integration
+      HTTPS webhook
+      HMAC SHA-256 signature
+      Sending via Graph API
+      Per-customer queue
+    🤖 Artificial intelligence
+      Quote intent
+      Model and defect extraction
+      JSON Schema output
+      Fallback to the guided flow
+    🗂️ Data
+      Requests with protocol
+      Schedule with atomic booking
+      Fictitious data
+      Credentials outside Git
+    ✅ Verification
+      Full flow simulation
+      Invalid signature rejected
+      Repeated messages not resent
+    🧭 Decisions
+      Confirmation before registration
+      Price set by the team
+      Lookup only for the requester
 ```
 
-## ⚙️ Funcionalidades
+## ⚙️ Features
 
-| Função | Comportamento |
+| Feature | Behavior |
 |---|---|
-| **Solicitar orçamento** | Coleta modelo, tipo de defeito e descrição, exibe um resumo e registra a solicitação após confirmação. O valor é definido pela equipe após avaliação do aparelho. |
-| **Acompanhar reparo** | Consulta o status, o modelo e a descrição de um pedido a partir do protocolo, somente para o remetente que o criou. |
-| **Agendar entrega** | Oferece até três horários livres nos próximos dias úteis. Cada horário é reservado uma única vez. |
-| **Endereço e horário** | Apresenta a localização de referência e o horário de atendimento da loja. |
-| **Falar com a equipe** | Registra uma solicitação de atendimento humano com o assunto informado pelo cliente. |
-| **Interpretação com IA** | Quando habilitada, identifica a intenção de orçamento em uma mensagem livre e extrai os dados do aparelho. |
+| **Request a quote** | Collects model, defect type and description, shows a summary and registers the request after confirmation. The price is set by the team after evaluating the device. |
+| **Track a repair** | Looks up the status, model and description of a request from its protocol number, only for the sender who created it. |
+| **Schedule a delivery** | Offers up to three free slots on the next business days. Each slot can be booked only once. |
+| **Address and hours** | Shows the store's reference location and business hours. |
+| **Talk to the team** | Registers a request for human service with the subject given by the customer. |
+| **AI interpretation** | When enabled, identifies quote intent in a free-text message and extracts the device data. |
 
-## 🔄 Fluxo de atendimento
+## 🔄 Service flow
 
 ```mermaid
 flowchart TD
-    A[Mensagem recebida] --> B{Tipo de mensagem}
-    B -->|Não é texto| C[Solicita texto]
-    B -->|Texto| D{Opção do menu}
-    D -->|1 Orçamento| E[Coleta modelo, defeito e descrição]
-    E --> F[Resumo para confirmação]
-    F -->|Confirma| G[Registra solicitação com protocolo]
-    D -->|2 Reparo| H[Consulta por protocolo]
-    D -->|3 Agenda| I[Lista horários livres]
-    I --> J[Reserva com protocolo]
-    D -->|4 Loja| K[Endereço e horário]
-    D -->|5 Equipe| L[Registra atendimento humano]
-    D -->|Texto livre| M{IA habilitada?}
-    M -->|Sim, é orçamento| E
-    M -->|Não ou não é orçamento| N[Exibe o menu]
+    A[Message received] --> B{Message type}
+    B -->|Not text| C[Asks for text]
+    B -->|Text| D{Menu option}
+    D -->|1 Quote| E[Collects model, defect and description]
+    E --> F[Summary for confirmation]
+    F -->|Confirms| G[Registers request with protocol]
+    D -->|2 Repair| H[Lookup by protocol]
+    D -->|3 Schedule| I[Lists free slots]
+    I --> J[Booking with protocol]
+    D -->|4 Store| K[Address and hours]
+    D -->|5 Team| L[Registers human service request]
+    D -->|Free text| M{AI enabled?}
+    M -->|Yes, it is a quote| E
+    M -->|No, or not a quote| N[Shows the menu]
 
     classDef orcamento fill:#DCFCE7,stroke:#16A34A,color:#14532D
     classDef reparo fill:#EDE9FE,stroke:#7C3AED,color:#4C1D95
@@ -131,79 +145,84 @@ flowchart TD
     class M,N ia
 ```
 
-## 🏗️ Arquitetura
+## 🏗️ Architecture
 
-Sequência de uma mensagem, do celular do cliente até a resposta do bot:
+Sequence of a message, from the customer's phone to the bot's reply:
 
 ```mermaid
 sequenceDiagram
     autonumber
-    participant C as Cliente
+    participant C as Customer
     participant M as Meta (Cloud API)
     participant W as whatsapp.mjs
     participant B as bot.mjs
-    C->>M: Envia mensagem de texto
-    M->>W: POST /webhook com x-hub-signature-256
-    W->>W: Valida assinatura HMAC SHA-256
+    C->>M: Sends a text message
+    M->>W: POST /webhook with x-hub-signature-256
+    W->>W: Validates HMAC SHA-256 signature
     W->>B: processarMensagem(estado, texto)
-    B-->>W: Resposta e novo estado
-    W->>M: Graph API envia a resposta
-    M->>C: Resposta do bot
+    B-->>W: Reply and new state
+    W->>M: Graph API sends the reply
+    M->>C: Bot reply
 ```
 
-Ciclo de status previsto para cada pedido registrado:
+Planned status cycle for each registered request:
 
 ```mermaid
 stateDiagram-v2
-    [*] --> aguardando_avaliacao: Pedido registrado
-    state "Aguardando avaliação" as aguardando_avaliacao
-    state "Em diagnóstico" as em_diagnostico
-    state "Aguardando peça" as aguardando_peca
-    state "Pronto para retirada" as pronto
+    [*] --> aguardando_avaliacao: Request registered
+    state "Awaiting evaluation" as aguardando_avaliacao
+    state "Under diagnosis" as em_diagnostico
+    state "Awaiting part" as aguardando_peca
+    state "Ready for pickup" as pronto
     aguardando_avaliacao --> em_diagnostico
     em_diagnostico --> aguardando_peca
     aguardando_peca --> pronto
     pronto --> [*]
 ```
 
-Componentes:
+Components:
 
-| Módulo | Responsabilidade |
+| Module | Responsibility |
 |---|---|
-| `bot.mjs` | Máquina de estados das conversas, regras de cada etapa e registro dos pedidos. |
-| `whatsapp.mjs` | Recebimento de eventos do webhook, validação de assinatura, controle de entregas e envio de respostas. |
-| `triagem.mjs` | Chamada à API da OpenAI com saída em JSON Schema, para extrair dados de texto livre. |
-| `operacao.mjs` | Agenda de horários, com reserva atômica por arquivo. |
+| `bot.mjs` | Conversation state machine, rules for each step and request registration. |
+| `whatsapp.mjs` | Receiving webhook events, signature validation, delivery control and sending replies. |
+| `triagem.mjs` | Call to the OpenAI API with JSON Schema output, to extract data from free text. |
+| `operacao.mjs` | Slot schedule, with atomic file-based booking. |
 
-## 🧭 Decisões técnicas
+## 🧭 Technical decisions
 
-- **Confirmação antes do registro.** A IA apenas sugere os dados. Nenhum pedido é gravado sem a confirmação do cliente.
-- **Valor fora do bot.** O sistema não estima preço. A avaliação do aparelho é responsabilidade da equipe.
-- **Validação da origem do webhook.** Cada evento é aceito somente com assinatura HMAC SHA-256 válida, comparada em tempo constante.
-- **Idempotência por mensagem.** Entregas já enviadas não são repetidas se a Meta reenviar o mesmo evento.
-- **Fila por cliente.** Mensagens de um mesmo remetente são processadas em ordem, sem respostas cruzadas.
-- **Fallback sem IA.** Se a API estiver indisponível ou não configurada, o fluxo guiado continua funcionando.
-- **Dependências mínimas.** O projeto usa somente os módulos nativos do Node.js.
-- **Dados fora do repositório.** Pedidos, reservas e credenciais são mantidos localmente e excluídos do controle de versão.
+- **Confirmation before registration.** The AI only suggests the data. No request is saved without the customer's confirmation.
+- **Pricing outside the bot.** The system does not estimate prices. Evaluating the device is the team's responsibility.
+- **Webhook origin validation.** Each event is accepted only with a valid HMAC SHA-256 signature, compared in constant time.
+- **Idempotency per message.** Deliveries already sent are not repeated if Meta resends the same event.
+- **Per-customer queue.** Messages from the same sender are processed in order, with no crossed replies.
+- **Fallback without AI.** If the API is unavailable or not configured, the guided flow keeps working.
+- **Minimal dependencies.** The project uses only Node.js built-in modules.
+- **Data outside the repository.** Requests, bookings and credentials are kept locally and excluded from version control.
 
-## 💬 Conversa simulada
+## 💬 Simulated conversation
 
-A conversa abaixo tem pedido de orçamento, confirmação, protocolo e consulta. Ela passa pelo mesmo webhook assinado que a Meta usaria, sem chamar a API.
+The conversation below includes a quote request, confirmation, protocol number and lookup (in Portuguese, as the
+customer would see it). It goes through the same signed webhook Meta would use, without calling the API.
 
 <p align="center">
-  <img src="docs/conversa-whatsapp.svg" alt="Conversa simulada no estilo WhatsApp" width="460"/>
+  <img src="docs/conversa-whatsapp.svg" alt="Simulated WhatsApp-style conversation" width="460"/>
 </p>
 
-Detalhes da simulação em [SIMULACAO.md](SIMULACAO.md).
+Simulation details in [SIMULACAO.md](SIMULACAO.md) (in Portuguese).
 
-## 🛠️ Tecnologias
+## 🛠️ Technologies
 
-| Categoria | Tecnologias |
+| Category | Technologies |
 |---|---|
-| Linguagem e runtime | JavaScript (ES Modules), Node.js |
-| Integração | WhatsApp Cloud API (Meta), webhooks, Graph API |
-| IA | OpenAI Responses API, saída estruturada com JSON Schema |
-| Segurança | HMAC SHA-256, comparação em tempo constante |
-| Armazenamento | Arquivos JSON Lines e agenda em arquivos |
-| Diagramas | Mermaid |
-| Versionamento | Git, GitHub |
+| Language and runtime | JavaScript (ES Modules), Node.js |
+| Integration | WhatsApp Cloud API (Meta), webhooks, Graph API |
+| AI | OpenAI Responses API, structured output with JSON Schema |
+| Security | HMAC SHA-256, constant-time comparison |
+| Storage | JSON Lines files and file-based schedule |
+| Diagrams | Mermaid |
+| Version control | Git, GitHub |
+
+<p align="center">
+  🌐 <a href="README.pt-BR.md">Ler esta página em português</a>
+</p>
