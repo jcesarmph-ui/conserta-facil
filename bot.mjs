@@ -5,6 +5,7 @@ import { randomInt } from 'node:crypto';
 import { pathToFileURL } from 'node:url';
 import { interpretarOrcamento } from './triagem.mjs';
 import { exibirHorario, infoLoja, listarHorarios, reservar } from './operacao.mjs';
+import { mascararTelefone, notificarFlowPilot } from './notificador.mjs';
 
 const pedidos = new URL('./pedidos.jsonl', import.meta.url);
 const voltar = 'Digite menu para voltar ao menu inicial.';
@@ -185,6 +186,12 @@ async function responder(estado, mensagem, cliente) {
       const protocolo = gerarProtocolo();
       try {
         if (!(await reservar(estado.horario, protocolo))) return oferecerHorarios();
+        notificarFlowPilot('horario_reservado', {
+          protocolo: String(protocolo),
+          dataHora: estado.horario + ':00-03:00',
+          duracaoMinutos: 60,
+          ...(cliente ? { cliente: mascararTelefone(cliente) } : {}),
+        });
         return { estado: inicio, resposta: `Reserva confirmada para ${exibirHorario(estado.horario)}. Protocolo: ${protocolo}\n${menu}` };
       } catch {
         return { estado, resposta: 'Não consegui salvar a reserva. Digite 1 para tentar novamente ou 2 para cancelar.' };
@@ -235,6 +242,15 @@ export async function processarMensagem(estado = inicio, mensagem, cliente) {
   if (resultado.pedidoParaRegistrar) {
     try {
       const protocolo = await registrarPedido(resultado.pedidoParaRegistrar, cliente);
+      const { modelo, defeito, descricao } = resultado.pedidoParaRegistrar;
+      notificarFlowPilot('pedido_registrado', {
+        protocolo: String(protocolo),
+        criadoEm: new Date().toISOString(),
+        modelo,
+        defeito,
+        descricao,
+        ...(cliente ? { cliente: mascararTelefone(cliente) } : {}),
+      });
       return {
         estado: resultado.estado,
         resposta: `${resultado.mensagemRegistro ?? 'Pedido registrado para avaliação'}. Protocolo: ${protocolo}\n${menu}`,
